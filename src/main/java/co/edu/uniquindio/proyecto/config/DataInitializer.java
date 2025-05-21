@@ -21,7 +21,7 @@ public class DataInitializer implements CommandLineRunner {
         // Verifica si el admin ya existe
         if (usuarioRepo.findByEmail("coordinadorelectricoberhlan@gmail.com").isEmpty()) {
             Usuario admin = Usuario.builder()
-                    .nombre("Pablo Adminin")
+                    .nombre("Pablo Admin")
                     .email("coordinadorelectricoberhlan@gmail.com")
                     .password(passwordEncoder.encode("1234567"))
                     .rol(Rol.ADMINISTRADOR)
@@ -31,7 +31,7 @@ public class DataInitializer implements CommandLineRunner {
             usuarioRepo.save(admin);
             System.out.println("Administrador creado exitosamente");
         } else {
-            System.out.println("Administrador ya existe");
+            System.out.println("Administrador ");
         }
     }
 }
