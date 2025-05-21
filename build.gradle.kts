@@ -73,9 +73,9 @@ dependencies {
 
 }
 
-tasks.withType<Test> {
-    useJUnitPlatform()
-}
+/*tasks.withType<Test> {
+    useJUnitPlatform()      //quito esto segun  la guia 17 despliegue
+}*/
 
 // Configuración para asegurar que Lombok se procese antes de MapStruct
 tasks.withType<JavaCompile> {
