@@ -39,7 +39,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(req -> req
                         // Configuración de permisos para endpoints públicos
                         .requestMatchers(
-                                "/api/auth/**",
+                                "/api/auth",
                                 "/api/imagenes",
                                 "/api/usuarios/registro",
                                 "/api/usuarios/activar/**",
