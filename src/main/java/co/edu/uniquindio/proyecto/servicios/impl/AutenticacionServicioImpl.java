@@ -87,7 +87,7 @@ public class AutenticacionServicioImpl  implements AutenticacionServicio {
         String tokenRecuperacion = jwtUtils.generateToken(usuario.getEmail(), claims, 15); // 15 minutos
 
         // Crear el contenido del correo
-        String cuerpoCorreo = "Usa el siguiente enlace o código para recuperar tu cuenta:\n\n"
+        String cuerpoCorreo = "Copia siguiente código para recuperar tu cuenta:\n\n"
                 + tokenRecuperacion + "\n\n"
                 + "Token expira en 15 minutos.";
 
