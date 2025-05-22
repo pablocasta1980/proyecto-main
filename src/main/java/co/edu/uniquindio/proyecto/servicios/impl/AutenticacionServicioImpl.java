@@ -89,7 +89,7 @@ public class AutenticacionServicioImpl  implements AutenticacionServicio {
         // Crear el contenido del correo
         String cuerpoCorreo = "Usa el siguiente enlace o código para recuperar tu cuenta:\n\n"
                 + tokenRecuperacion + "\n\n"
-                + "Este token expirará en 15 minutos.";
+                + "Token expira en 15 minutos.";
 
         EmailDTO emailDTO = new EmailDTO(
                 usuario.getEmail(),
