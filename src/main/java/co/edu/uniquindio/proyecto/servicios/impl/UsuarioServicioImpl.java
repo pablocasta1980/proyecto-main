@@ -69,8 +69,8 @@ public class UsuarioServicioImpl implements UsuarioServicio {
         // Crear el correo con el token
         EmailDTO emailDTO = new EmailDTO(
                 crearUsuarioDTO.email(),
-                "Token de Activación - AlertasComunitariasApp",
-                "Hola, gracias por registrarte en AlertasComunitariasApp.\n\n" +
+                "Token de Activación - Alertas Urbanas",
+                "Hola, gracias por registrarte en Alertas Urbanas.\n\n" +
                         "Para activar tu cuenta, utiliza el siguiente token de autenticación:\n\n" +
                         token.token() + "\n\n" +
                         "Este token expirará en 15 minutos."
@@ -302,9 +302,9 @@ public class UsuarioServicioImpl implements UsuarioServicio {
 
         EmailDTO emailDTO = new EmailDTO(
                 email,
-                "Nuevo Token de Activación - AlertasComunitariasApp",
-                "Nuevo token de activación:\n\n" + nuevoToken.token() +
-                        "\n\nToken expirará en 15 minutos."
+                "Nuevo Token de Activación - Alertas Urbanas",
+                "Hola, aquí tienes un nuevo token de activación:\n\n" + nuevoToken.token() +
+                        "\n\nEste token expirará en 15 minutos."
         );
 
         emailServicio.enviarCorreo(emailDTO);
