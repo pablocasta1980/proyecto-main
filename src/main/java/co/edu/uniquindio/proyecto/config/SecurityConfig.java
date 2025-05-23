@@ -1,6 +1,5 @@
 package co.edu.uniquindio.proyecto.config;
 
-
 import co.edu.uniquindio.proyecto.seguridad.AutenticacionEntryPoint;
 import co.edu.uniquindio.proyecto.seguridad.JWTFilter;
 import lombok.RequiredArgsConstructor;
@@ -21,22 +20,17 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-
 import java.util.List;
-
 
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-
     private final JWTFilter jwtFilter;
-
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        // Configura la seguridad HTTP para la aplicación
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
@@ -58,45 +52,34 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/reportes").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/reportes/cercanos").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/reportes/buscar").permitAll()
-
-
                         .requestMatchers(HttpMethod.GET, "/api/categorias/{id}").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/categorias").permitAll()
-
                         .requestMatchers(HttpMethod.GET, "/api/comentarios/**").permitAll()
-
-                        //Se establecen los permisos en las rutas de backend
                         .requestMatchers(HttpMethod.GET, "/api/usuarios/{id}").permitAll()
-
 
                         // Rutas solo para CLIENTES autenticados
                         .requestMatchers(HttpMethod.POST, "/api/usuarios/notificaciones/suscribirse").hasAuthority("ROLE_CLIENTE")
                         .requestMatchers(HttpMethod.PUT, "/api/usuarios/actualizar-password").hasAuthority("ROLE_CLIENTE")
                         .requestMatchers(HttpMethod.PUT, "/api/usuarios/**").hasAuthority("ROLE_CLIENTE")
                         .requestMatchers(HttpMethod.DELETE, "/api/usuarios/**").hasAuthority("ROLE_CLIENTE")
-
                         .requestMatchers(HttpMethod.POST, "/api/reportes").hasAuthority("ROLE_CLIENTE")
                         .requestMatchers(HttpMethod.PUT, "/api/reportes/{id}").hasAuthority("ROLE_CLIENTE")
                         .requestMatchers(HttpMethod.DELETE, "/api/reportes/{id}").hasAuthority("ROLE_CLIENTE")
                         .requestMatchers(HttpMethod.POST, "/api/reportes/{id}/importante").hasAuthority("ROLE_CLIENTE")
                         .requestMatchers(HttpMethod.POST, "/api/reportes/{id}/calificacion").hasAuthority("ROLE_CLIENTE")
                         .requestMatchers(HttpMethod.GET, "/api/reportes/mis-reportes").hasAuthority("ROLE_CLIENTE")
-
                         .requestMatchers(HttpMethod.POST, "/api/comentarios/**").hasAuthority("ROLE_CLIENTE")
-
 
                         // Rutas solo para ADMINISTRADORES
                         .requestMatchers(HttpMethod.POST, "/api/categorias").hasAuthority("ROLE_ADMINISTRADOR")
                         .requestMatchers(HttpMethod.PUT, "/api/categorias/{id}").hasAuthority("ROLE_ADMINISTRADOR")
                         .requestMatchers(HttpMethod.DELETE, "/api/categorias/{id}").hasAuthority("ROLE_ADMINISTRADOR")
-
                         .requestMatchers(HttpMethod.GET, "/api/reportes/informe").hasAuthority("ROLE_ADMINISTRADOR")
                         .requestMatchers(HttpMethod.GET, "/api/reportes/filtrar").hasAuthority("ROLE_ADMINISTRADOR")
                         .requestMatchers(HttpMethod.GET, "/api/usuarios").hasAuthority("ROLE_ADMINISTRADOR")
 
                         // Ruta administradores y clientes
                         .requestMatchers(HttpMethod.PUT, "/api/reportes/{id}/estado").permitAll()
-
 
                         // Todo lo demás requiere autenticación
                         .anyRequest().authenticated()
@@ -106,7 +89,6 @@ public class SecurityConfig {
 
         return http.build();
     }
-
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
@@ -124,17 +106,13 @@ public class SecurityConfig {
         return source;
     }
 
-
     @Bean
     public PasswordEncoder passwordEncoder() {
-        // Permite codificar y verificar contraseñas utilizando BCrypt
         return new BCryptPasswordEncoder();
     }
 
-
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
-        // Proporciona un AuthenticationManager para la autenticación de usuarios
         return configuration.getAuthenticationManager();
     }
 }
