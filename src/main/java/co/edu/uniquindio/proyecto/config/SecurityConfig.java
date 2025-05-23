@@ -112,24 +112,13 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         // Configura las políticas de CORS para permitir solicitudes desde el frontend
         CorsConfiguration config = new CorsConfiguration();
-
-        // Configura los orígenes permitidos (desarrollo y producción)
-        config.setAllowedOrigins(List.of(
-                "http://localhost:4200",                           // Desarrollo local
-                "https://alertascomunitariasapp.web.app"           // Producción
-        ));
-
-        // Métodos HTTP permitidos
+        config.setAllowedOrigins(List.of("*"));
+        //Permitir Comunicacion con Angular
+        config.setAllowedOrigins(List.of("http://localhost:4200"));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-
-        // Headers permitidos
         config.setAllowedHeaders(List.of("*"));
-
-        // Permitir credenciales (cookies, headers de autorización)
         config.setAllowCredentials(true);
 
-        // Headers que el cliente puede acceder
-        config.setExposedHeaders(List.of("Authorization"));
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
