@@ -31,7 +31,7 @@ import java.util.List;
 public class SecurityConfig {
 
 
-    private final JWTFilter jwtFilter;
+     private final JWTFilter jwtFilter;
 
 
     @Bean
