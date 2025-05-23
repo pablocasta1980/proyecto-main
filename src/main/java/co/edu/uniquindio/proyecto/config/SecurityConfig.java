@@ -17,8 +17,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 
 import java.util.List;
 
@@ -33,10 +33,10 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
-                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .cors() // Deja que el CorsFilter se encargue
+                .and()
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(req -> req
-                        // Rutas públicas
                         .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/imagenes").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/auth/recuperarPassword").permitAll()
@@ -44,10 +44,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/usuarios/registro").permitAll()
                         .requestMatchers(HttpMethod.PUT, "/api/usuarios/activar/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/usuarios/reenviar-token").permitAll()
-                        .requestMatchers(
-                                "/v3/api-docs/**",
-                                "/swagger-ui/**",
-                                "/swagger-ui.html").permitAll()
+                        .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/reportes/{id}").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/reportes").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/reportes/cercanos").permitAll()
@@ -57,11 +54,11 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/comentarios/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/usuarios/{id}").permitAll()
 
-                        // Rutas solo para CLIENTES autenticados
                         .requestMatchers(HttpMethod.POST, "/api/usuarios/notificaciones/suscribirse").hasAuthority("ROLE_CLIENTE")
                         .requestMatchers(HttpMethod.PUT, "/api/usuarios/actualizar-password").hasAuthority("ROLE_CLIENTE")
                         .requestMatchers(HttpMethod.PUT, "/api/usuarios/**").hasAuthority("ROLE_CLIENTE")
                         .requestMatchers(HttpMethod.DELETE, "/api/usuarios/**").hasAuthority("ROLE_CLIENTE")
+
                         .requestMatchers(HttpMethod.POST, "/api/reportes").hasAuthority("ROLE_CLIENTE")
                         .requestMatchers(HttpMethod.PUT, "/api/reportes/{id}").hasAuthority("ROLE_CLIENTE")
                         .requestMatchers(HttpMethod.DELETE, "/api/reportes/{id}").hasAuthority("ROLE_CLIENTE")
@@ -70,18 +67,16 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/reportes/mis-reportes").hasAuthority("ROLE_CLIENTE")
                         .requestMatchers(HttpMethod.POST, "/api/comentarios/**").hasAuthority("ROLE_CLIENTE")
 
-                        // Rutas solo para ADMINISTRADORES
                         .requestMatchers(HttpMethod.POST, "/api/categorias").hasAuthority("ROLE_ADMINISTRADOR")
                         .requestMatchers(HttpMethod.PUT, "/api/categorias/{id}").hasAuthority("ROLE_ADMINISTRADOR")
                         .requestMatchers(HttpMethod.DELETE, "/api/categorias/{id}").hasAuthority("ROLE_ADMINISTRADOR")
+
                         .requestMatchers(HttpMethod.GET, "/api/reportes/informe").hasAuthority("ROLE_ADMINISTRADOR")
                         .requestMatchers(HttpMethod.GET, "/api/reportes/filtrar").hasAuthority("ROLE_ADMINISTRADOR")
                         .requestMatchers(HttpMethod.GET, "/api/usuarios").hasAuthority("ROLE_ADMINISTRADOR")
 
-                        // Ruta administradores y clientes
                         .requestMatchers(HttpMethod.PUT, "/api/reportes/{id}/estado").permitAll()
 
-                        // Todo lo demás requiere autenticación
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(ex -> ex.authenticationEntryPoint(new AutenticacionEntryPoint()))
@@ -90,12 +85,13 @@ public class SecurityConfig {
         return http.build();
     }
 
+    // Filtro global de CORS: asegúrate de incluir tu frontend aquí
     @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
+    public CorsFilter corsFilter() {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowedOrigins(List.of(
-                "http://localhost:4200",
-                "https://alertascomunitariasapp.web.app"
+                "https://alertascomunitariasapp.web.app",
+                "http://localhost:4200"
         ));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
@@ -103,7 +99,7 @@ public class SecurityConfig {
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
-        return source;
+        return new CorsFilter(source);
     }
 
     @Bean
